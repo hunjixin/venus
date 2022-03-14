@@ -83,7 +83,7 @@ jobs:
           test -z "$(git status --porcelain)"
 
       - name: Run coverage
-        run:  go test -coverpkg=./... -race -coverprofile=coverage.txt -covermode=atomic ./... -integration=true -unit=true
+        run:  go test -coverpkg=./... -race -coverprofile=coverage.txt -covermode=atomic ./...
 
       - name: Upload
         uses: codecov/codecov-action@v2
@@ -91,6 +91,6 @@ jobs:
           token:
           files: ./coverage.txt
           flags: unittests
-          name: venus-market
+          name: venus
           fail_ci_if_error: true
           verbose: true
