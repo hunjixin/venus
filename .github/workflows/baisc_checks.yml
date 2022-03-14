@@ -22,7 +22,7 @@ jobs:
           go-version: 1.17
 
       - name: install deps
-        run: sudo apt-get install make ftp git bzr curl wget -y && sudo apt upgrade -y
+        run: sudo apt-get install make ncftp mesa-opencl-icd ocl-icd-opencl-dev gcc git bzr jq pkg-config curl clang build-essential hwloc libhwloc-dev wget -y && sudo apt upgrade -y
 
       - name: dep
         env:
@@ -30,6 +30,13 @@ jobs:
           GO111MODULE: "on"
         run: |
           make deps
+
+      - name: Build
+        env:
+          GOPROXY: "https://proxy.golang.org,direct"
+          GO111MODULE: "on"
+        run: |
+          make
 
       - name: Lint
         run: |
@@ -54,13 +61,6 @@ jobs:
         run: |
           git status --porcelain
           test -z "$(git status --porcelain)"
-
-      - name: Build
-        env:
-          GOPROXY: "https://proxy.golang.org,direct"
-          GO111MODULE: "on"
-        run: |
-          make
 
       - name: Run coverage
         run:  go test -coverpkg=./... -race -coverprofile=coverage.txt -covermode=atomic ./... -integration=true -unit=true
