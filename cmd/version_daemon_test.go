@@ -26,7 +26,7 @@ func TestVersion(t *testing.T) {
 	require.NoError(t, err)
 
 	version := string(verOut)
-	assert.Contains(t, version, fmt.Sprintf("%s+git.%s", constants.BuildVersion, commit[0:9]))
+	assert.Contains(t, version, fmt.Sprintf("%s+git.%s", constants.BuildVersion, commit[0:7]))
 }
 
 func TestVersionOverHttp(t *testing.T) {
@@ -52,7 +52,7 @@ func TestVersionOverHttp(t *testing.T) {
 	require.NoError(t, err)
 	require.Equal(t, http.StatusOK, res.StatusCode)
 
-	commit := getCodeCommit(t)[0:9]
+	commit := getCodeCommit(t)[0:7]
 
 	defer res.Body.Close() // nolint: errcheck
 	body, err := ioutil.ReadAll(res.Body)
