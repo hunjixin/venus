@@ -24,6 +24,14 @@ jobs:
       - name: install deps
         run: sudo apt-get install make ncftp mesa-opencl-icd ocl-icd-opencl-dev gcc git bzr jq pkg-config curl clang build-essential hwloc libhwloc-dev wget -y && sudo apt upgrade -y
 
+      - name: install statediff globally
+        run: |
+          ## statediff is optional; we succeed even if compilation fails.
+          mkdir -p /tmp/statediff
+          git clone https://github.com/filecoin-project/statediff.git /tmp/statediff
+          cd /tmp/statediff
+          go install ./cmd/statediff || exit 0
+
       - name: dep
         env:
           GOPROXY: "https://proxy.golang.org,direct"
