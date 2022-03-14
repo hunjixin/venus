@@ -64,10 +64,10 @@ jobs:
           ./gengen --keypath ./fixtures/test --out-car ./fixtures/test/genesis.car --out-json  ./fixtures/test/gen.json --config ./fixtures/setup.json
 
       - name: Unit Test
-        run: go test -v ./... -integration=false -unit=true
+        run: go test -timeout 20m -v ./... -integration=false -unit=true  --timeout 20m
 
       - name: Integration Test
-        run: go test -v ./... -integration=true -unit=false
+        run: go test -timeout 20m  -v ./... -integration=true -unit=false
 
       - name: Compatible all
         run: |
