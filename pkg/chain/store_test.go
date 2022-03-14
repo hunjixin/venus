@@ -262,39 +262,30 @@ func TestHeadEvents(t *testing.T) {
 	link2 := builder.AppendOn(ctx, link1, 3)
 	link3 := builder.AppendOn(ctx, link2, 1)
 	link4 := builder.BuildOn(ctx, link3, 2, func(bb *chain.BlockBuilder, i int) { bb.IncHeight(2) })
-
-	assertSetHead(t, chainStore, genTS)
-
 	chA := chainStore.Store.SubHeadChanges(ctx)
 	chB := chainStore.Store.SubHeadChanges(ctx)
 	// HCurrent
-	currentA := <-chA
-	test.Equal(t, currentA[0].Type, types.HCCurrent)
-	test.Equal(t, currentA[0].Val, genTS)
-
-	currentB := <-chB
-	test.Equal(t, currentB[0].Type, types.HCCurrent)
-	test.Equal(t, currentB[0].Val, genTS)
+	<-chA
+	<-chB
 
 	defer ctx.Done()
-	assertSetHead(t, chainStore, link1)
-	assertSetHead(t, chainStore, link2)
-	assertSetHead(t, chainStore, link3)
-	assertSetHead(t, chainStore, link4)
-	assertSetHead(t, chainStore, link3)
-	assertSetHead(t, chainStore, link2)
-	assertSetHead(t, chainStore, link1)
-	assertSetHead(t, chainStore, genTS)
-	heads := []*types.TipSet{genTS, link1, link2, link3, link4, link4, link3, link2, link1, genTS}
+
+	headSets := []*types.TipSet{genTS, link1, link2, link3, link4, link3, link2, link1, genTS}
+	heads := []*types.TipSet{genTS, link1, link2, link3, link4, link4, link3, link2, link1}
 	types := []types.HeadChangeType{types.HCApply, types.HCApply, types.HCApply, types.HCApply, types.HCApply, types.HCRevert,
 		types.HCRevert, types.HCRevert, types.HCRevert}
-	// Heads arrive in the expected order
-	for i := 0; i < 9; i++ {
+	var waitAndCheck = func(index int) {
 		headA := <-chA
 		headB := <-chB
-		assert.Equal(t, headA[0].Type, types[i])
+		assert.Equal(t, headA[0].Type, types[index])
 		test.Equal(t, headA, headB)
-		test.Equal(t, headA[0].Val, heads[i])
+		test.Equal(t, headA[0].Val, heads[index])
+	}
+
+	// Heads arrive in the expected order
+	for i := 0; i < 9; i++ {
+		assertSetHead(t, chainStore, headSets[i])
+		waitAndCheck(i)
 	}
 	// No extra notifications
 	assertEmptyCh(t, chA)
