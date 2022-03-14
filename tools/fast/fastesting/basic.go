@@ -92,7 +92,7 @@ func NewTestEnvironment(ctx context.Context, t *testing.T, fastenvOpts fast.File
 
 // RequireNewNode builds a new node for the environment
 func (env *TestEnvironment) RequireNewNode() *fast.Filecoin {
-	p, err := env.NewProcess(env.ctx, env.pluginName, env.pluginOpts, env.fastenvOpts)
+	p, err := env.Environment.NewProcess(env.ctx, env.pluginName, env.pluginOpts, env.fastenvOpts)
 	require.NoError(env.t, err)
 
 	return p
@@ -141,7 +141,7 @@ func (env *TestEnvironment) Teardown(ctx context.Context) error {
 
 // DumpEnvOutputOnFail calls `DumpLastOutput for each process if the test failed.
 func (env *TestEnvironment) DumpEnvOutputOnFail() {
-	dumpEnvOutputOnFail(env.t, env.Processes())
+	dumpEnvOutputOnFail(env.t, env.Environment.Processes())
 }
 
 // RunAsyncMiner unset MiningOnce for conflict

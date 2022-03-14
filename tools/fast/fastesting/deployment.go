@@ -147,7 +147,7 @@ func makeDevnet(ctx context.Context, t *testing.T, network string, dir string, f
 // RequireNewNodeStarted builds a new node using RequireNewNode, then initializes
 // and starts it
 func (env *DeploymentEnvironment) RequireNewNodeStarted() *fast.Filecoin {
-	p, err := env.NewProcess(env.ctx, env.pluginName, env.pluginOpts, env.fastenvOpts)
+	p, err := env.Environment.NewProcess(env.ctx, env.pluginName, env.pluginOpts, env.fastenvOpts)
 	require.NoError(env.t, err)
 
 	err = series.InitAndStart(env.ctx, p, env.postInitFn)
@@ -161,7 +161,7 @@ func (env *DeploymentEnvironment) RequireNewNodeStarted() *fast.Filecoin {
 func (env *DeploymentEnvironment) RequireNewNodeWithFunds() *fast.Filecoin {
 	p := env.RequireNewNodeStarted()
 
-	err := env.GetFunds(env.ctx, p)
+	err := env.Environment.GetFunds(env.ctx, p)
 	require.NoError(env.t, err)
 
 	return p
@@ -177,5 +177,5 @@ func (env *DeploymentEnvironment) Teardown(ctx context.Context) error {
 
 // DumpEnvOutputOnFail calls `DumpLastOutput for each process if the test failed.
 func (env *DeploymentEnvironment) DumpEnvOutputOnFail() {
-	dumpEnvOutputOnFail(env.t, env.Processes())
+	dumpEnvOutputOnFail(env.t, env.Environment.Processes())
 }
