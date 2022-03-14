@@ -30,7 +30,7 @@ func TestDownloadGenesis(t *testing.T) {
 
 	err = exec.CommandContext(
 		ctx,
-		th.Root("tools/genesis-file-server/genesis-file-server"),
+		th.Root("/genesis-file-server"),
 		"--genesis-file-path",
 		th.Root("fixtures/test/genesis.car"),
 		"--port",

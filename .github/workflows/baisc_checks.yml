@@ -56,10 +56,12 @@ jobs:
           curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.44.2
           golangci-lint run --timeout 10m
 
-      - name: Gen
+      - name: GenTool
         run: |
+          go build -o genesis-file-server ./tools/genesis-file-server
           go build -o gengen ./tools/gengen
-          ./gengen --keypath ./fixtures/live --out-car ./fixtures/live/genesis.car --out-json  ./fixtures/live/gen.jsoon --config ./fixtures/setup.json
+          ./gengen --keypath ./fixtures/live --out-car ./fixtures/live/genesis.car --out-json  ./fixtures/live/gen.json --config ./fixtures/setup.json
+          ./gengen --keypath ./fixtures/test --out-car ./fixtures/test/genesis.car --out-json  ./fixtures/test/gen.json --config ./fixtures/setup.json
 
       - name: Unit Test
         run: go test -v ./... -integration=false -unit=true
