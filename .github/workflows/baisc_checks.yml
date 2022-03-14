@@ -44,10 +44,10 @@ jobs:
           golangci-lint run --timeout 10m
 
       - name: Unit Test
-        run: go test -integration=false -unit=true -v ./...
+        run: go test -v ./... -integration=false -unit=true
 
       - name: Integration Test
-        run: go test -integration=true -unit=false -v ./...
+        run: go test -v ./... -integration=true -unit=false
 
       - name: Compatible all
         run: |
