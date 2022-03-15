@@ -59,19 +59,16 @@ jobs:
           ./gengen --keypath ./fixtures/test --out-car ./fixtures/test/genesis.car --out-json  ./fixtures/test/gen.json --config ./fixtures/setup.json
 
       - name: Unit Test
-        run: go test -timeout 20m -v ./... -integration=false -unit=true  --timeout 20m
+        run: go test -coverpkg=./... -coverprofile=coverage_unit.txt -covermode=atomic -timeout=30m -parallel=4 -v ./... -integration=false -unit=true
 
       - name: Integration Test
-        run: go test -timeout 20m  -v ./... -integration=true -unit=false
-
-      - name: Run coverage
-        run:  go test -coverpkg=./... -coverprofile=coverage.txt -covermode=atomic -timeout=30m -parallel=4 ./... -integration=true -unit=true
+        run: go test -coverpkg=./... -coverprofile=coverage_integration.txt -covermode=atomic -timeout=30m -parallel=4  -v ./... -integration=true -unit=false
 
       - name: Upload
         uses: codecov/codecov-action@v2
         with:
           token:
-          files: ./coverage.txt
+          files: ./coverage_unit.txt,./coverage_integration.txt
           flags: unittests
           name: venus
           fail_ci_if_error: true
