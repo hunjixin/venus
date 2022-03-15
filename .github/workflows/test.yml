@@ -69,7 +69,7 @@ jobs:
         with:
           token:
           files: ./coverage_unit.txt,./coverage_integration.txt
-          flags: unittests
+          flags: unittests,integration
           name: venus
           fail_ci_if_error: true
           verbose: true
